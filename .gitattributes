@@ -1,2 +1,66 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+data:
+  dataset: {name: mnist, samples: 70000, type: public}
+  datasetLoadOption: full
+  kfold: 1
+  mapping:
+    Digit Label:
+      options: {}
+      port: OutputPort0
+      shape: ''
+      type: Categorical
+    Image:
+      options: {Augmentation: false, Height: 28, Normalization: false, Resize: false,
+        Scaling: 1, Width: 28, height_shift_range: 0, horizontal_flip: false, pretrained: None,
+        rotation_range: 0, shear_range: 0, vertical_flip: false, width_shift_range: 0}
+      port: InputPort0
+      shape: ''
+      type: Image
+  numPorts: 1
+  samples: {split: 0, test: 0, training: 60000, validation: 10000}
+  shuffle: false
+model:
+  connections:
+  - {source: Convolution2D_360, target: BatchNormalization_148}
+  - {source: Input_2, target: Convolution2D_360}
+  - {source: Dense_202, target: Output_42}
+  - {source: BatchNormalization_148, target: Flatten_92}
+  - {source: Flatten_92, target: Dense_202}
+  layers:
+  - args: {dim_ordering: tf}
+    class: Input
+    name: Input_2
+    x: 39
+    y: 13
+  - args: {}
+    class: Output
+    name: Output_42
+    x: 188
+    y: 393
+  - args: {}
+    class: Flatten
+    name: Flatten_92
+    x: 448
+    y: 196
+  - args: {activation: softmax, init: zero, output_dim: '10'}
+    class: Dense
+    name: Dense_202
+    x: 448
+    y: 303
+  - args: {activation: softplus, nb_col: '5', nb_filter: '20', nb_row: '5'}
+    class: Convolution2D
+    name: Convolution2D_360
+    x: 46
+    y: 140
+  - args: {epsilon: '0.5', mode: 1, momentum: '0.5'}
+    class: BatchNormalization
+    name: BatchNormalization_148
+    x: 453
+    y: 81
+params:
+  advance_params: true
+  batch_size: 24
+  is_custom_loss: false
+  loss_func: binary_crossentropy
+  num_epoch: 124
+  optimizer: {lr: '0.001', name: SGD}
+project: MNIST
